@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 import time
-import datetime
+
 import requests
 import telegram
 from dotenv import load_dotenv
