@@ -59,19 +59,18 @@ def get_api_answer(current_timestamp: int) -> Dict[str, Union[List, int]]:
             headers=HEADERS,
             params=params
         )
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
         hw_logger.error('Проблема с запросом')
-        raise requests.exceptions.RequestException
+        raise e
     if response.status_code == 200:
         hw_logger.info('Ответ получен')
         return response.json()
-    else:
-        hw_logger.error(
-            'Ошибка при обращении к сервису. '
-            f'Статус: {response.status_code} '
-            f'Текст: {response.text}'
-        )
-        raise exceptions.ErrorValueIsNone
+    hw_logger.error(
+        'Ошибка при обращении к сервису. '
+        f'Статус: {response.status_code} '
+        f'Текст: {response.text}'
+    )
+    raise exceptions.ErrorValueIsNone
 
 
 def check_response(response: Dict) -> List:
@@ -85,9 +84,6 @@ def check_response(response: Dict) -> List:
             'Ожидался list, получен '
             f'{type(response.get("homeworks"))}'
         )
-    if len(response) < 1:
-        hw_logger.error('Получен пустой ответ.')
-        raise exceptions.ErrorInvalidResponse
     return response.get('homeworks')
 
 
